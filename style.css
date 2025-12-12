@@ -1,5 +1,5 @@
 :root {
-    /* DEFAULT THEME (Night/Space) */
+    /* DEFAULT THEME (Neutral) */
     --bg-color: #050505;
     --orb-1: #4f46e5; /* Indigo */
     --orb-2: #db2777; /* Pink */
@@ -10,38 +10,46 @@
     --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-/* --- WEATHER THEMES (Applied to body via JS) --- */
+/* --- TEMPERATURE THEMES --- */
 
-/* Sunny / Clear */
-body.sunny {
-    --bg-color: #1a1500;
-    --orb-1: #ff8c00; /* Deep Orange */
-    --orb-2: #fbbf24; /* Warm Yellow */
-    --orb-3: #0ea5e9; /* Sky Blue */
+/* Hot (> 30°C) - Fiery Reds and Oranges */
+body.hot {
+    --bg-color: #2b0a00; /* Deep Dark Red */
+    --orb-1: #ef4444;    /* Red */
+    --orb-2: #f97316;    /* Orange */
+    --orb-3: #eab308;    /* Yellow */
 }
 
-/* Clouds */
-body.cloudy {
-    --bg-color: #111827;
-    --orb-1: #6b7280; /* Grey */
-    --orb-2: #9ca3af; /* Light Grey */
-    --orb-3: #475569; /* Slate */
+/* Warm (20°C - 29°C) - Golden Hour / Sunset vibes */
+body.warm {
+    --bg-color: #1a1000; /* Dark Brown/Gold */
+    --orb-1: #d97706;    /* Amber */
+    --orb-2: #db2777;    /* Pink */
+    --orb-3: #fbbf24;    /* Gold */
 }
 
-/* Rain / Thunderstorm */
-body.rainy {
-    --bg-color: #0f172a;
-    --orb-1: #1e3a8a; /* Dark Blue */
-    --orb-2: #334155; /* Blue Grey */
-    --orb-3: #4338ca; /* Deep Indigo */
+/* Cool (10°C - 19°C) - Refreshing Teals and Greens */
+body.cool {
+    --bg-color: #022c22; /* Dark Teal */
+    --orb-1: #10b981;    /* Emerald */
+    --orb-2: #06b6d4;    /* Cyan */
+    --orb-3: #14b8a6;    /* Teal */
 }
 
-/* Snow */
-body.snowy {
-    --bg-color: #0c0a18;
-    --orb-1: #e0f2fe; /* Ice White */
-    --orb-2: #22d3ee; /* Bright Cyan */
-    --orb-3: #a5f3fc; /* Pale Blue */
+/* Cold (0°C - 9°C) - Crisp Blues */
+body.cold {
+    --bg-color: #0f172a; /* Navy */
+    --orb-1: #3b82f6;    /* Blue */
+    --orb-2: #6366f1;    /* Indigo */
+    --orb-3: #60a5fa;    /* Light Blue */
+}
+
+/* Freezing (< 0°C) - Icy Purples and Whites */
+body.freezing {
+    --bg-color: #050505; /* Black */
+    --orb-1: #a855f7;    /* Purple */
+    --orb-2: #e2e8f0;    /* Ice White */
+    --orb-3: #818cf8;    /* Periwinkle */
 }
 
 /* ------------------------------------- */
@@ -62,7 +70,7 @@ body {
     overflow: hidden;
     position: relative;
     cursor: none;
-    transition: background-color 1.5s ease; /* Smooth fade between weathers */
+    transition: background-color 1.5s ease;
 }
 
 /* Tech Grid Overlay */
@@ -87,7 +95,7 @@ body::after {
     z-index: 0;
     opacity: 0.6;
     mix-blend-mode: screen;
-    transition: background-color 1.5s ease; /* Smooth color change */
+    transition: background-color 1.5s ease;
 }
 
 .orb-1 {
