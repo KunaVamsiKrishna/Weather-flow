@@ -2,6 +2,10 @@
 //  1. WEATHER APP LOGIC
 // =============================
 
+// NEW API CONFIGURATION
+const API_KEY = '7a4bee2195msh942db397a84fb3ap14f92ajsn0e612748c38b';
+const API_HOST = 'open-weather13.p.rapidapi.com';
+
 document.getElementById("main").addEventListener("keyup", function(event) {
     if (event.key === "Enter") {
         getdata();
@@ -14,7 +18,6 @@ function getdata() {
     
     if(!city) return; 
 
-    // Reset cursor/UI states if needed
     document.getElementById("loader").classList.remove("hidden");
     document.getElementById("weather").innerHTML = ""; 
 
@@ -22,14 +25,14 @@ function getdata() {
 }
 
 async function showWeather(city) {
-    // FIX: Added '&units=metric' to the URL to get Celsius instead of Fahrenheit
-    const url = `https://open-weather13.p.rapidapi.com/city?city=${city}&lang=EN&units=metric`;
+    // URL updated to use the variables
+    const url = `https://${API_HOST}/city?city=${encodeURIComponent(city)}&lang=EN`;
     
     const options = {
         method: 'GET',
         headers: {
-            'x-rapidapi-key': '3500daf6a1msh358c415efd259b1p1a035ajsn0571d96eea49',
-            'x-rapidapi-host': 'open-weather13.p.rapidapi.com'
+            'x-rapidapi-key': API_KEY,
+            'x-rapidapi-host': API_HOST
         }
     };
 
@@ -41,8 +44,6 @@ async function showWeather(city) {
         const result = await response.json();
         
         renderWeather(result);
-        
-        // Update the background animation based on weather condition
         updateBackground(result.weather[0].main);
 
     } catch (error) {
@@ -57,10 +58,7 @@ function updateBackground(condition) {
     const body = document.body;
     const iconSpan = document.getElementById("weather-icon");
     
-    // Remove all previous weather classes
     body.classList.remove("sunny", "cloudy", "rainy", "snowy");
-
-    // Normalize condition string (make lower case for comparison)
     const weather = condition.toLowerCase();
 
     if (weather.includes("clear")) {
@@ -76,33 +74,50 @@ function updateBackground(condition) {
         body.classList.add("snowy");
         iconSpan.innerText = "❄️";
     } else {
-        // Default / Night / Clear
         iconSpan.innerText = "🌙";
     }
+}
+
+// Helper function to convert Fahrenheit to Celsius
+function toCelsius(val) {
+    if (typeof val !== 'number') return null;
+    // Heuristic: If val > 60, assume Fahrenheit (since 60C is 140F, unlivable)
+    // Some APIs return Kelvin (e.g. > 200), handle that too just in case
+    if (val > 200) return Math.round(val - 273.15); 
+    if (val > 60) return Math.round((val - 32) * 5 / 9);
+    return Math.round(val);
 }
 
 function renderWeather(data) {
     let div = document.getElementById("weather");
     
-    let temp = Math.round(data.main.temp);
-    let max = Math.round(data.main.temp_max);
-    let min = Math.round(data.main.temp_min);
+    // Check if data structure is valid
+    if (!data.main || !data.weather) {
+         div.innerHTML = `<p style="color: #ff6b6b;">Invalid Data received.</p>`;
+         return;
+    }
+
+    // Convert temperature
+    let tempC = toCelsius(data.main.temp);
+    let maxC = toCelsius(data.main.temp_max);
+    let minC = toCelsius(data.main.temp_min);
+
     let desc = data.weather[0].description; 
 
     div.innerHTML = `
         <div class="weather-info">
             <h3 class="city-name">📍 ${data.name}</h3>
-            <div class="temp-big">${temp}°C</div>
+            <div class="temp-big">${tempC}°C</div>
             <p style="text-transform: capitalize; opacity: 0.8; margin-bottom: 10px;">${desc}</p>
             
             <div class="details-grid">
                 <div class="detail-item">
                     <small>High</small>
-                    <span>⬆ ${max}°</span>
+                    <span>⬆ ${maxC}°</span>
                 </div>
                 <div class="detail-item">
                     <small>Low</small>
-                    <span>⬇ ${min}°</span>
+                    <span>⬇ ${minC}°</span>
                 </div>
             </div>
         </div>
@@ -120,13 +135,15 @@ window.addEventListener("mousemove", function (e) {
     const posX = e.clientX;
     const posY = e.clientY;
 
-    cursorDot.style.left = `${posX}px`;
-    cursorDot.style.top = `${posY}px`;
+    if (cursorDot && cursorOutline) {
+        cursorDot.style.left = `${posX}px`;
+        cursorDot.style.top = `${posY}px`;
 
-    cursorOutline.animate({
-        left: `${posX}px`,
-        top: `${posY}px`
-    }, { duration: 500, fill: "forwards" });
+        cursorOutline.animate({
+            left: `${posX}px`,
+            top: `${posY}px`
+        }, { duration: 500, fill: "forwards" });
+    }
 });
 
 const interactables = document.querySelectorAll("button, input");
