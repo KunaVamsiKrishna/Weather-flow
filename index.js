@@ -22,13 +22,15 @@ function getdata() {
 }
 
 async function showWeather(city) {
-    const url = `https://open-weather13.p.rapidapi.com/city?city=${city}&lang=EN`;
+    // FIX: Added '&units=metric' to the URL to get Celsius instead of Fahrenheit
+    const url = `https://open-weather13.p.rapidapi.com/city?city=${city}&lang=EN&units=metric`;
+    
     const options = {
         method: 'GET',
-         headers: {
-		'x-rapidapi-key': 'f24733bd44mshaeb6224bca07fa3p10af11jsn2cf56c05d41c',
-		'x-rapidapi-host': 'open-weather13.p.rapidapi.com'
-	  }
+        headers: {
+            'x-rapidapi-key': '3500daf6a1msh358c415efd259b1p1a035ajsn0571d96eea49',
+            'x-rapidapi-host': 'open-weather13.p.rapidapi.com'
+        }
     };
 
     try {
@@ -37,9 +39,10 @@ async function showWeather(city) {
             throw new Error("City not found or API error");
         }
         const result = await response.json();
+        
         renderWeather(result);
         
-        // --- TRIGGER ANIMATION CHANGE HERE ---
+        // Update the background animation based on weather condition
         updateBackground(result.weather[0].main);
 
     } catch (error) {
@@ -73,7 +76,7 @@ function updateBackground(condition) {
         body.classList.add("snowy");
         iconSpan.innerText = "❄️";
     } else {
-        // Default / Night
+        // Default / Night / Clear
         iconSpan.innerText = "🌙";
     }
 }
@@ -84,7 +87,7 @@ function renderWeather(data) {
     let temp = Math.round(data.main.temp);
     let max = Math.round(data.main.temp_max);
     let min = Math.round(data.main.temp_min);
-    let desc = data.weather[0].description; // Get description (e.g., "light rain")
+    let desc = data.weather[0].description; 
 
     div.innerHTML = `
         <div class="weather-info">
